@@ -1,0 +1,1139 @@
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE FARMING
+OBJECT MODULE PLACED IN .\Objects\farming.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE farming.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\f
+                    -arming.lst) TABS(2) OBJECT(.\Objects\farming.obj)
+
+line level    source
+
+   1          #include <lcd.h>
+   2          #include "eeprom.h"
+   3          #include "delay.h"
+   4          
+   5          void timerINT();
+   6          void delay (unsigned int d );
+   7          void sets();
+   8          void dismode();
+   9          void custmmodeedit();
+  10          void custmmodeset();
+  11          void domode(unsigned char);
+  12          void servo(unsigned char);
+  13          void pumpon(unsigned long cmodeonttt);
+  14          void shour();
+  15          unsigned int rst (unsigned char ad);
+  16          void rti(unsigned char oo );
+  17          void restor();
+  18          void custmmode0();
+  19          void custmmode1();
+  20          void custmmode2();
+  21            
+  22          unsigned char holemodenum=1;
+  23          unsigned char hole0modenum=1;
+  24          unsigned char hole1modenum=1;
+  25          unsigned char hole2modenum=1;
+  26          
+  27          
+  28          unsigned char holep0=30;
+  29          unsigned char holep1=90;
+  30          unsigned char holep2=170;
+  31          unsigned char place=0;
+  32          
+  33          unsigned char dosc=0;
+  34          unsigned char seton=0;
+  35          
+  36          unsigned char us=0;
+  37          unsigned char angel=0;
+  38          unsigned char i=1;
+  39          unsigned char ii=1;
+  40          unsigned char lass=1;
+  41          unsigned char lasssen=1;
+  42          
+  43          unsigned long hour=0;
+  44          unsigned long hourf=0;
+  45          
+  46          
+  47          unsigned int modevolum=5;
+  48          
+  49          unsigned long hourtime=3600000;
+  50          
+  51          unsigned long fshour=0;
+  52          
+  53          unsigned long millis=0;
+  54          
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 2   
+
+  55          unsigned long testhont=0;
+  56          
+  57          unsigned char holmodenum=1;
+  58          
+  59          //****************//
+  60          
+  61          //****************//
+  62          
+  63          unsigned int cmodedt=0;
+  64          unsigned int cmodeont=5;
+  65          //****************//
+  66          
+  67          unsigned int cmode0ont=5;
+  68          unsigned int cmode1ont=5;
+  69          unsigned int cmode2ont=5;
+  70          
+  71          //****************//
+  72          unsigned int cmode0dt=0;
+  73          unsigned int cmode1dt=0;
+  74          unsigned int cmode2dt=0;
+  75          
+  76          unsigned int cmode0dft=0;
+  77          unsigned int cmode1dft=0;
+  78          unsigned int cmode2dft=0;
+  79          
+  80          
+  81          sbit EN = P1^0;
+  82          sbit RS = P1^1;
+  83          sbit pump=P1^2;
+  84          sbit motor=P1^4;
+  85          
+  86          sbit edit=P1^5;
+  87          
+  88          sbit inc=P3^0;
+  89          sbit ok=P3^1;
+  90          sbit setinput=P3^2;
+  91          sbit wlevel=P3^3;
+  92          sbit dec=P3^4;
+  93          sbit buzzer=P3^5;
+  94          sbit sda=P3^6;
+  95          sbit scl=P3^7;
+  96          
+  97          
+  98          /******************
+  99          *******************
+ 100          *******************/
+ 101          
+ 102          void main()
+ 103          {
+ 104   1      timerINT();
+ 105   1      motor=1;  
+ 106   1      lcdint();
+ 107   1      eeint(AT24C02);
+ 108   1      
+ 109   1        lcddigt(1,3);
+ 110   1        lcdprint("Thanks To");
+ 111   1        lcddigt(2,2);
+ 112   1        lcdprint("Eng.Safinaz");
+ 113   1        delay(3000);
+ 114   1        lcdcmd(1);
+ 115   1        lcddigt(1,3);
+ 116   1        lcdprint("Thanks To");
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 3   
+
+ 117   1        lcddigt(2,2);
+ 118   1        lcdprint("Eng.A-Elsayed");
+ 119   1        delay(3000);
+ 120   1        lcdcmd(1);
+ 121   1        lcddigt(1,4);
+ 122   1        lcdprint("MADE BY");
+ 123   1        lcddigt(2,2);
+ 124   1        lcdprint("'50013 TEAM'");
+ 125   1        delay(3000);
+ 126   1        lcdcmd(1);  
+ 127   1      
+ 128   1      restor();
+ 129   1      
+ 130   1      
+ 131   1      while(1)
+ 132   1        
+ 133   1      {
+ 134   2        if(seton)
+ 135   2        {
+ 136   3        sets();
+ 137   3        seton=0;
+ 138   3        }
+ 139   2        
+ 140   2      if (millis-fshour>=hourtime/2)
+ 141   2      {
+ 142   3      fshour=millis;
+ 143   3      shour();
+ 144   3      }
+ 145   2      
+ 146   2      lcddigt(1,0);
+ 147   2      lcdprint("SC1");
+ 148   2      lcddigt(2,0);
+ 149   2       rti(hole0modenum);
+ 150   2      
+ 151   2      lcddigt(1,4);
+ 152   2      lcdprint("SC2");
+ 153   2      lcddigt(2,4);
+ 154   2      rti(hole1modenum);
+ 155   2      
+ 156   2      
+ 157   2      lcddigt(1,8);
+ 158   2      lcdprint("SC3");
+ 159   2      lcddigt(2,8);
+ 160   2      rti(hole2modenum);
+ 161   2      
+ 162   2      /*
+ 163   2      lcddigt(1,12);
+ 164   2      lcdvar(hour);
+ 165   2      */
+ 166   2      if(hole0modenum!=5&&!seton)
+ 167   2      {
+ 168   3          dosc=1;
+ 169   3        place=holep0;
+ 170   3        domode(hole0modenum);
+ 171   3      }
+ 172   2      
+ 173   2      
+ 174   2      if(hole1modenum!=5&&!seton) 
+ 175   2      {
+ 176   3          dosc=2;
+ 177   3        place=holep1;
+ 178   3        domode(hole1modenum);
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 4   
+
+ 179   3      
+ 180   3      }
+ 181   2      
+ 182   2      if(hole2modenum!=5&&!seton) 
+ 183   2      { 
+ 184   3        dosc=3;
+ 185   3        place=holep2;
+ 186   3        domode(hole2modenum)  ;
+ 187   3      
+ 188   3      }
+ 189   2      
+ 190   2      if(!wlevel)
+ 191   2      {buzzer=0;}
+ 192   2      else
+ 193   2      {buzzer=1;}
+ 194   2      delay(2000);
+ 195   2      lcdcmd(1);
+ 196   2      
+ 197   2      }
+ 198   1      
+ 199   1      
+ 200   1      }
+ 201          
+ 202          /*****************************************************
+ 203          *****************************************************
+ 204          *****************************************************/
+ 205          
+ 206          void sets()
+ 207          {
+ 208   1      unsigned char  y=1;   
+ 209   1      for(i=1;i<=3;i++)
+ 210   1        {
+ 211   2          
+ 212   2          switch(i)
+ 213   2      {
+ 214   3        case 1 :
+ 215   3          holemodenum=hole0modenum;
+ 216   3         break;
+ 217   3      case 2 :
+ 218   3          holemodenum=hole1modenum;
+ 219   3         break;
+ 220   3      case 3 :
+ 221   3          holemodenum=hole2modenum;
+ 222   3         break;
+ 223   3      default:i=1;
+ 224   3          }
+ 225   2          
+ 226   2      lcdcmd(1);
+ 227   2      while(ok||holemodenum==4)
+ 228   2      {
+ 229   3      if(!inc)
+ 230   3      {
+ 231   4      holemodenum++;
+ 232   4      lcdcmd(1);
+ 233   4      delay(60);
+ 234   4      }
+ 235   3      if(!dec)
+ 236   3      {
+ 237   4      holemodenum--;
+ 238   4      lcdcmd(1);
+ 239   4      delay(60);
+ 240   4      }
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 5   
+
+ 241   3      if(holemodenum>5)
+ 242   3      holemodenum=1;
+ 243   3      if(holemodenum<1)
+ 244   3      holemodenum=5;
+ 245   3      custmmodeedit();
+ 246   3      
+ 247   3      delay(30);
+ 248   3      lcddigt(1,0);
+ 249   3      lcdchar('<');
+ 250   3      lcddigt(1,15);
+ 251   3      lcdchar('>');
+ 252   3      lcddigt(1,3);
+ 253   3      lcdprint("SC");
+ 254   3      lcdvar(i);
+ 255   3      lcdprint(":");
+ 256   3      dismode();
+ 257   3      delay(30);
+ 258   3      
+ 259   3      
+ 260   3      }
+ 261   2      
+ 262   2      switch(i)
+ 263   2      {
+ 264   3        case 1 :
+ 265   3          hole0modenum=holemodenum;
+ 266   3          eesave(0x00,hole0modenum);
+ 267   3         break;
+ 268   3      case 2 :
+ 269   3          hole1modenum=holemodenum;
+ 270   3         eesave(0x01,hole1modenum);
+ 271   3      
+ 272   3         break;
+ 273   3      case 3 :
+ 274   3          hole2modenum=holemodenum;
+ 275   3          eesave(0x02,hole2modenum);
+ 276   3         break;
+ 277   3      default:i=1;
+ 278   3          }
+ 279   2      
+ 280   2      delay(30);
+ 281   2      lcdcmd(1);
+ 282   2          
+ 283   2        if(!ok)
+ 284   2        delay(450);
+ 285   2      }
+ 286   1      i=1;
+ 287   1      seton=0;
+ 288   1      while(y)
+ 289   1        {
+ 290   2        lcddigt(1,0);
+ 291   2        lcdprint("Do u want test ?");
+ 292   2        lcddigt(2,0);
+ 293   2        lcdprint("YES:OK"); 
+ 294   2        lcddigt(2,9);
+ 295   2        lcdprint("NO:EDIT");    
+ 296   2        ii=1;
+ 297   2          if(!ok)
+ 298   2          {
+ 299   3            for (ii;ii<=3;ii++)
+ 300   3            {
+ 301   4        lcdcmd(1);
+ 302   4        lcddigt(1,5);
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 6   
+
+ 303   4        lcdprint("TESTING!");
+ 304   4        lcddigt(2,1);
+ 305   4        lcdprint("SC");
+ 306   4        lcdvar(ii);     
+ 307   4       
+ 308   4        delay(100);
+ 309   4              
+ 310   4      switch(ii)
+ 311   4                
+ 312   4        {
+ 313   5          case 1:
+ 314   5          holmodenum = hole0modenum;
+ 315   5          place=holep0;
+ 316   5          dosc=1;
+ 317   5      
+ 318   5          break;  
+ 319   5              
+ 320   5          case 2:
+ 321   5          holmodenum = hole1modenum;    
+ 322   5          place=holep1;
+ 323   5          dosc=2;
+ 324   5      
+ 325   5          break;
+ 326   5          case 3:
+ 327   5          holmodenum=hole2modenum;
+ 328   5          place=holep2 ;
+ 329   5          dosc=3;
+ 330   5          break;
+ 331   5              }
+ 332   4              
+ 333   4            switch(holmodenum)
+ 334   4            {
+ 335   5              case 1:
+ 336   5              testhont=cmode0ont;
+ 337   5              break;
+ 338   5              case 2:
+ 339   5              testhont=cmode1ont;
+ 340   5              break;
+ 341   5              case 3:
+ 342   5              testhont=cmode2ont;
+ 343   5              break;
+ 344   5            }
+ 345   4            
+ 346   4            
+ 347   4          pumpon(testhont);
+ 348   4          lcdcmd(1);
+ 349   4            
+ 350   4            
+ 351   4          }
+ 352   3          y=0;
+ 353   3          }
+ 354   2            
+ 355   2        if(!edit)
+ 356   2        y=0;
+ 357   2          }
+ 358   1          ii=1;
+ 359   1          lcdcmd(1);
+ 360   1          
+ 361   1        }
+ 362          
+ 363          /*****************************************************
+ 364          *****************************************************
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 7   
+
+ 365          *****************************************************/
+ 366          
+ 367          
+ 368          void domode(unsigned char m)
+ 369          
+ 370          {
+ 371   1          switch(m)
+ 372   1        
+ 373   1      {
+ 374   2      
+ 375   2        case 1 :
+ 376   2        custmmode0();
+ 377   2        break;
+ 378   2        
+ 379   2        case 2 :
+ 380   2        custmmode1();
+ 381   2        break;
+ 382   2        
+ 383   2        case 3 :
+ 384   2        custmmode2();
+ 385   2        break;
+ 386   2        
+ 387   2      }
+ 388   1      }
+ 389          
+ 390          
+ 391          /*****************************************************
+ 392          *****************************************************
+ 393          *****************************************************/
+ 394          
+ 395          void custmmodeedit()
+ 396          {
+ 397   1        switch(holemodenum)
+ 398   1          
+ 399   1        {
+ 400   2        
+ 401   2        case 1 :
+ 402   2          
+ 403   2        if(!edit)
+ 404   2        {
+ 405   3        lcdcmd(1);
+ 406   3        custmmodeset();
+ 407   3        }
+ 408   2        break;
+ 409   2        
+ 410   2        case 2:
+ 411   2          
+ 412   2        if(!edit)
+ 413   2        {
+ 414   3        lcdcmd(1);
+ 415   3        custmmodeset();
+ 416   3        } 
+ 417   2        
+ 418   2        break;
+ 419   2        
+ 420   2        case 3 :
+ 421   2          
+ 422   2        if(!edit)
+ 423   2        {lcdcmd(1);
+ 424   3        custmmodeset();
+ 425   3        }
+ 426   2        break;
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 8   
+
+ 427   2        
+ 428   2        
+ 429   2        case 4 :
+ 430   2          
+ 431   2        
+ 432   2        if(!edit)
+ 433   2        {
+ 434   3          switch(i)
+ 435   3      {
+ 436   4        case 1 :
+ 437   4        angel=holep0;
+ 438   4         break;
+ 439   4      case 2 :
+ 440   4        angel=holep1;
+ 441   4         break;
+ 442   4      case 3 :
+ 443   4        angel=holep2;
+ 444   4         break;
+ 445   4      default:i=1;
+ 446   4          }
+ 447   3          lcdcmd(1);  
+ 448   3      
+ 449   3        while(ok)
+ 450   3          
+ 451   3        {
+ 452   4          
+ 453   4      if(!inc)
+ 454   4      {
+ 455   5      angel++;
+ 456   5      lcdcmd(1);
+ 457   5      }
+ 458   4      if(!dec)
+ 459   4      {
+ 460   5      angel--;
+ 461   5      lcdcmd(1);
+ 462   5      }
+ 463   4      if(angel>180)
+ 464   4      angel=1;
+ 465   4      if(angel<1)
+ 466   4      angel=180;
+ 467   4      servo(angel);
+ 468   4      delay(5);
+ 469   4      lcddigt(2,0);
+ 470   4      lcdchar('<');
+ 471   4      lcddigt(2,15);
+ 472   4      lcdchar('>');
+ 473   4      lcddigt(1,2);
+ 474   4      lcdprint("'st HOLE ANGEL");
+ 475   4      delay(5);
+ 476   4      lcddigt(1,1);
+ 477   4      lcdvar(i); 
+ 478   4      lcddigt(2,5);
+ 479   4      lcdvar(angel);
+ 480   4      delay(5);
+ 481   4      switch(i)
+ 482   4      {
+ 483   5        case 1 :
+ 484   5          holep0=angel;
+ 485   5      eesave(0x03,holep0);
+ 486   5      delay(10);
+ 487   5      
+ 488   5         break;
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 9   
+
+ 489   5      case 2 :
+ 490   5          holep1=angel;
+ 491   5      eesave(0x04,holep1);
+ 492   5      delay(10);
+ 493   5         break;
+ 494   5      
+ 495   5      
+ 496   5      case 3 :
+ 497   5      
+ 498   5      holep2=angel;
+ 499   5      eesave(0x05,holep2);
+ 500   5      delay(10);
+ 501   5         break;
+ 502   5      default:i=1;
+ 503   5          }
+ 504   4      
+ 505   4      delay(20);
+ 506   4        
+ 507   4        }
+ 508   3        lcdcmd(1);
+ 509   3        }
+ 510   2        
+ 511   2        
+ 512   2        break;
+ 513   2        
+ 514   2        case 5 :
+ 515   2      
+ 516   2        break;
+ 517   2        
+ 518   2        }
+ 519   1      
+ 520   1      }
+ 521          
+ 522          
+ 523          
+ 524          /*****************************************************
+ 525          *****************************************************
+ 526          *****************************************************/
+ 527          
+ 528           void custmmodeset(  )
+ 529           {
+ 530   1       
+ 531   1      switch(holemodenum)
+ 532   1      {
+ 533   2        case 1 :
+ 534   2      modevolum=cmode0ont*5;
+ 535   2      cmodedt=cmode0dt;
+ 536   2      break;
+ 537   2        case 2 :
+ 538   2      modevolum=cmode1ont*5;
+ 539   2      cmodedt=cmode1dt;
+ 540   2      
+ 541   2      break;
+ 542   2        case 3 :
+ 543   2      modevolum=cmode2ont*5;
+ 544   2      cmodedt=cmode2dt;
+ 545   2      break;
+ 546   2      }
+ 547   1      
+ 548   1         
+ 549   1        while(ok)
+ 550   1          
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 10  
+
+ 551   1      {
+ 552   2          
+ 553   2      if(!inc)
+ 554   2      {
+ 555   3      modevolum=modevolum+5;
+ 556   3      lcdcmd(1);
+ 557   3      }
+ 558   2      if(!dec)
+ 559   2      {
+ 560   3      modevolum=modevolum-5;
+ 561   3      lcdcmd(1);
+ 562   3      }
+ 563   2      
+ 564   2      delay(20);
+ 565   2      lcddigt(2,0);
+ 566   2      lcdchar('<');
+ 567   2      lcddigt(2,15);
+ 568   2      lcdchar('>');
+ 569   2      
+ 570   2      lcddigt(1,2);
+ 571   2      lcdprint("Save");
+ 572   2      lcdvar(holemodenum);
+ 573   2      lcdprint("PATCH"); 
+ 574   2      delay(20);
+ 575   2      lcddigt(2,5);
+ 576   2      lcdvar(modevolum);
+ 577   2      lcdprint("mL");
+ 578   2      delay(50);
+ 579   2      cmodeont=(modevolum/5);
+ 580   2      }
+ 581   1      
+ 582   1      delay(500);
+ 583   1      
+ 584   1      
+ 585   1      
+ 586   1        while(ok)
+ 587   1      {
+ 588   2        
+ 589   2      if(!inc)
+ 590   2      {
+ 591   3      cmodedt++;
+ 592   3       lcdcmd(1);
+ 593   3      }
+ 594   2      if(!dec)
+ 595   2      {
+ 596   3      cmodedt--;
+ 597   3      lcdcmd(1);
+ 598   3      }
+ 599   2      
+ 600   2      delay(20);
+ 601   2      lcddigt(2,0);
+ 602   2      lcdchar('<');
+ 603   2      lcddigt(2,15);
+ 604   2      lcdchar('>');
+ 605   2      
+ 606   2      lcddigt(1,1);
+ 607   2      lcdprint("Save");
+ 608   2      lcdvar(holemodenum);
+ 609   2      lcdprint(" PIROUD");
+ 610   2      delay(20);
+ 611   2       
+ 612   2      lcddigt(2,5);
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 11  
+
+ 613   2      lcdvar(cmodedt);
+ 614   2      lcdprint("Hour");
+ 615   2      delay(35);
+ 616   2      }
+ 617   1      
+ 618   1      delay(300);
+ 619   1      lcdcmd(1);
+ 620   1      
+ 621   1      switch(holemodenum)
+ 622   1      {
+ 623   2        case 1 :
+ 624   2      cmode0ont=cmodeont;
+ 625   2      cmode0dt=cmodedt;
+ 626   2      eesave(0x10,cmode0dt);
+ 627   2      eesave(0x11,(cmode0dt>>8));
+ 628   2        
+ 629   2      eesave(0x12,cmode0ont);
+ 630   2      eesave(0x13,(cmode0ont>>8));
+ 631   2        
+ 632   2      break;
+ 633   2        case 2 :
+ 634   2      cmode1ont=cmodeont;
+ 635   2      cmode1dt=cmodedt;
+ 636   2        
+ 637   2      eesave(0x14,cmode1dt);
+ 638   2      eesave(0x15,(cmode1dt>>8));
+ 639   2        
+ 640   2      eesave(0x16,cmode1ont);
+ 641   2      eesave(0x17,(cmode1ont>>8));
+ 642   2        
+ 643   2      break;
+ 644   2        
+ 645   2        case 3 :
+ 646   2      cmode2ont=cmodeont;
+ 647   2      cmode2dt=cmodedt;
+ 648   2      
+ 649   2      eesave(0x18,cmode2dt);
+ 650   2      eesave(0x19,(cmode2dt>>8));
+ 651   2        
+ 652   2      eesave(0x1A,cmode2ont);
+ 653   2      eesave(0x1B,(cmode2ont>>8));
+ 654   2      break;
+ 655   2      }
+ 656   1      
+ 657   1      }
+ 658          
+ 659          /*****************************************************
+ 660          *****************************************************
+ 661          *****************************************************/
+ 662          
+ 663          
+ 664          void custmmode0()
+ 665          {
+ 666   1        
+ 667   1      if((hour-cmode0dft)>=cmode0dt)
+ 668   1        {
+ 669   2          pumpon(cmode0ont);
+ 670   2        cmode0dft=hour;
+ 671   2        }
+ 672   1        
+ 673   1      }
+ 674          
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 12  
+
+ 675          void custmmode1()
+ 676          {
+ 677   1      
+ 678   1        if((hour-cmode1dft)>=cmode1dt)
+ 679   1        {
+ 680   2          pumpon(cmode1ont);
+ 681   2      
+ 682   2        cmode1dft=hour;
+ 683   2        }
+ 684   1      }
+ 685          
+ 686          
+ 687          void custmmode2()
+ 688          { 
+ 689   1      if((hour-cmode2dft)>=cmode2dt)
+ 690   1        {
+ 691   2        pumpon(cmode2ont);
+ 692   2        cmode2dft=hour;
+ 693   2        }
+ 694   1      }
+ 695          
+ 696          
+ 697          void pumpon(unsigned long cmodeonttt)
+ 698          {
+ 699   1        
+ 700   1        unsigned long cmodeontft=millis;
+ 701   1        while((((millis-cmodeontft)/1000)<cmodeonttt)&&!seton)
+ 702   1        {
+ 703   2        lcdcmd(1);
+ 704   2         lcddigt(1,4);
+ 705   2        lcdprint("pumbing..");
+ 706   2          lcddigt(2,6);
+ 707   2        switch (dosc)
+ 708   2        {
+ 709   3          case  1:
+ 710   3          lcdprint("SC1");
+ 711   3          break;
+ 712   3          
+ 713   3          case 2:
+ 714   3          lcdprint("SC2");
+ 715   3          break;
+ 716   3          
+ 717   3          case 3:
+ 718   3          lcdprint("SC3");
+ 719   3          break;
+ 720   3          
+ 721   3        }
+ 722   2        
+ 723   2        servo(place);
+ 724   2        delay(500);
+ 725   2        pump=0;
+ 726   2        }
+ 727   1        pump=1;
+ 728   1        delay(100);
+ 729   1      
+ 730   1      }
+ 731          
+ 732          
+ 733          /*****************************************************
+ 734          *****************************************************
+ 735          *****************************************************/
+ 736          
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 13  
+
+ 737          
+ 738          
+ 739          void rti(unsigned char oo )
+ 740          {
+ 741   1      switch(oo)
+ 742   1      { 
+ 743   2        case 1 :
+ 744   2        lcdvar(cmode0dt-(hour-cmode0dft));  
+ 745   2        break;
+ 746   2        
+ 747   2        case 2 :
+ 748   2          lcdvar(cmode1dt-(hour-cmode1dft));
+ 749   2        break;
+ 750   2          
+ 751   2        case 3 :
+ 752   2          lcdvar(cmode2dt-(hour-cmode2dft));
+ 753   2        break;
+ 754   2        
+ 755   2        case 5 :
+ 756   2        lcdprint("off");
+ 757   2        break;
+ 758   2      }
+ 759   1      }
+ 760          
+ 761          
+ 762          void dismode()
+ 763            
+ 764          {
+ 765   1      switch (holemodenum)
+ 766   1        
+ 767   1      {
+ 768   2      
+ 769   2        case 1:
+ 770   2        lcdprint("Save 1");
+ 771   2        lcddigt(2,0);
+ 772   2        lcdprint("OK");
+ 773   2        lcddigt(2,12);
+ 774   2        lcdprint("EDIT");
+ 775   2        break;
+ 776   2      
+ 777   2        case 2:
+ 778   2          lcdprint("Save 2");
+ 779   2        lcddigt(2,0);
+ 780   2        lcdprint("OK");
+ 781   2        lcddigt(2,12);
+ 782   2        lcdprint("EDIT");
+ 783   2        break;
+ 784   2      
+ 785   2        case 3:
+ 786   2          lcdprint("Save 3");
+ 787   2          lcddigt(2,0);
+ 788   2        lcdprint("OK");
+ 789   2        lcddigt(2,12);
+ 790   2        lcdprint("EDIT");
+ 791   2        break;
+ 792   2      
+ 793   2        case 4:
+ 794   2        lcdprint("position");
+ 795   2        lcddigt(2,12);
+ 796   2        lcdprint("EDIT");
+ 797   2        break;
+ 798   2        
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 14  
+
+ 799   2        case 5:
+ 800   2        lcdprint("OFF");
+ 801   2        lcddigt(2,12);
+ 802   2        lcddigt(2,0);
+ 803   2        lcdprint("OK");
+ 804   2        break;
+ 805   2      
+ 806   2        default:lcdprint("fuck");
+ 807   2      }
+ 808   1      
+ 809   1      }
+ 810          
+ 811          
+ 812          
+ 813          void shour()
+ 814          {
+ 815   1        
+ 816   1        
+ 817   1        eesave(0x06,hour);
+ 818   1        eesave(0x07,hour>>8);
+ 819   1        eesave(0x08,hour>>16);
+ 820   1        eesave(0x09,hour>>24);
+ 821   1        
+ 822   1        eesave(0x70,cmode0dft);
+ 823   1        eesave(0x71,cmode0dft>>8);
+ 824   1        
+ 825   1        eesave(0x72,cmode1dft);
+ 826   1        eesave(0x73,cmode1dft>>8);
+ 827   1        
+ 828   1        eesave(0x74,cmode2dft);
+ 829   1        eesave(0x75,cmode2dft>>8);
+ 830   1      
+ 831   1      }
+ 832          
+ 833          unsigned int rst (unsigned char ad)
+ 834          {
+ 835   1      unsigned int ti=0;
+ 836   1      ti|= eeread(ad+1);
+ 837   1      ti=ti<<8;
+ 838   1      ti|= eeread(ad);
+ 839   1      return ti;
+ 840   1      }
+ 841          
+ 842          
+ 843          void restor()
+ 844          {
+ 845   1      
+ 846   1      EA=0;
+ 847   1      
+ 848   1        hole0modenum = eeread(0x00);
+ 849   1        hole1modenum = eeread(0x01);
+ 850   1        hole2modenum = eeread(0x02);
+ 851   1        
+ 852   1        holep0 = eeread(0x03);
+ 853   1        holep1 = eeread(0x04);
+ 854   1        holep2 = eeread(0x05);
+ 855   1        
+ 856   1      
+ 857   1        hour=0;
+ 858   1        hour|= eeread(0x09);
+ 859   1      
+ 860   1        hour= hour<<8;
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 15  
+
+ 861   1      
+ 862   1        hour|=   eeread(0x08);
+ 863   1        hour= hour<<8;
+ 864   1      
+ 865   1        hour|=  eeread(0x07);
+ 866   1        hour= hour<<8;
+ 867   1        
+ 868   1        hour|= eeread(0x06);
+ 869   1        
+ 870   1        
+ 871   1        cmode0dt= rst(0x10);  
+ 872   1         
+ 873   1        cmode1dt= rst(0x14);
+ 874   1      
+ 875   1        cmode2dt= rst(0x18);
+ 876   1      
+ 877   1        cmode0ont= rst(0x12);
+ 878   1        
+ 879   1        cmode1ont= rst(0x16);
+ 880   1      
+ 881   1        cmode2ont= rst(0x1A);
+ 882   1        
+ 883   1          
+ 884   1        cmode0dft= rst(0x70); 
+ 885   1         
+ 886   1        cmode1dft= rst(0x72);
+ 887   1      
+ 888   1        cmode2dft= rst(0x74);
+ 889   1        
+ 890   1        EA=1;
+ 891   1      
+ 892   1      }
+ 893          
+ 894          /*****************************************************
+ 895          *****************************************************
+ 896          *****************************************************/
+ 897          void servo( unsigned char ang)
+ 898          {
+ 899   1        
+ 900   1      unsigned int Tics = 64735-(ang * 23);
+ 901   1      
+ 902   1      unsigned char LOWREG = Tics & 0x00FF ;
+ 903   1      unsigned char HREG = (Tics>>8) & 0x00FF ;
+ 904   1      unsigned long ftime=millis;
+ 905   1        while (millis-ftime<100)
+ 906   1        {
+ 907   2      unsigned long ftimme = millis;
+ 908   2          TH1=HREG;
+ 909   2          TL1=LOWREG;
+ 910   2          TR1=1;
+ 911   2          motor=1;
+ 912   2        while (millis-ftimme<20)
+ 913   2        {}
+ 914   2        }
+ 915   1      
+ 916   1      }
+ 917          
+ 918          
+ 919          void timerINT()
+ 920          {
+ 921   1      TMOD=0x11;
+ 922   1      IE=0x8A;
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 16  
+
+ 923   1      TH0 =0xF8;
+ 924   1      TL0=0x30;
+ 925   1      EX0=1;
+ 926   1      IT0=1;
+ 927   1      IT1=0;  
+ 928   1      TR1=0;
+ 929   1      TR0=1;
+ 930   1      
+ 931   1      }
+ 932          
+ 933          
+ 934          
+ 935          void delay ( unsigned int d )
+ 936          
+ 937          {
+ 938   1        
+ 939   1      unsigned long  fimillis=millis;
+ 940   1      
+ 941   1      while((millis-fimillis)<d)
+ 942   1      {}
+ 943   1        
+ 944   1      }
+ 945          
+ 946          
+ 947          void Timer (void)interrupt 1
+ 948           
+ 949           { 
+ 950   1        millis++; 
+ 951   1        TR0=0;
+ 952   1        TF0=0;
+ 953   1        TH0 =0xF8;
+ 954   1        TL0=0x39;
+ 955   1        TR0=1;
+ 956   1        
+ 957   1        if(millis-hourf>hourtime)
+ 958   1        {
+ 959   2        hour++;
+ 960   2        hourf=millis;
+ 961   2      if(!lass)   
+ 962   2      {
+ 963   3        lcdcmd(1);
+ 964   3        lcddigt(1,3);
+ 965   3        lcdprint("Demo mood!");
+ 966   3        DELAY_ms(1500);
+ 967   3        lcdcmd(1);
+ 968   3      }
+ 969   2        }
+ 970   1          
+ 971   1        
+ 972   1       }
+ 973           
+ 974           void Timer1 (void) interrupt 3
+ 975          
+ 976          {
+ 977   1        motor=0;
+ 978   1        TR1=0;
+ 979   1        TF1=0;
+ 980   1      }
+ 981          
+ 982          
+ 983          
+ 984          void water (void) interrupt 2
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 17  
+
+ 985          {
+ 986   1      while(!wlevel)
+ 987   1      {
+ 988   2      buzzer=0;
+ 989   2      }
+ 990   1      buzzer=1;
+ 991   1      IE=0;
+ 992   1      }
+ 993          
+ 994          
+ 995          
+ 996          
+ 997          
+ 998          
+ 999          
+1000          void set (void) interrupt 0
+1001            
+1002          {
+1003   1      unsigned char zeb=6;
+1004   1      seton=1;
+1005   1      IE0=0;
+1006   1      DELAY_ms(50);
+1007   1      if(!edit)
+1008   1      {
+1009   2        hour=0;
+1010   2        for(zeb=6;zeb<=9;zeb++)
+1011   2        { 
+1012   3        eesave(zeb,0x00);
+1013   3        }
+1014   2        seton=0;
+1015   2        lcdcmd(1);
+1016   2        lcddigt(1,3);
+1017   2        lcdprint("Time clear !");
+1018   2        DELAY_ms(3000);
+1019   2        lcdcmd(1);
+1020   2      }
+1021   1      DELAY_ms(50);
+1022   1      
+1023   1      if(!ok)
+1024   1      { seton=0;
+1025   2        DELAY_ms(50);
+1026   2        if(lass)
+1027   2        {
+1028   3        seton=0;
+1029   3        lcdcmd(1);
+1030   3        lcddigt(1,3);
+1031   3        lcdprint("Demo ON !");
+1032   3        hourtime=3600;
+1033   3        DELAY_ms(3000);
+1034   3        lass=!lass;
+1035   3        lcdcmd(1);
+1036   3        }
+1037   2        else
+1038   2        {
+1039   3        lcdcmd(1);
+1040   3        lcddigt(1,3);
+1041   3        lcdprint("Demo OFF !");
+1042   3        hourtime=3600000;
+1043   3        DELAY_ms(3000);
+1044   3        lass=!lass;
+1045   3        lcdcmd(1);
+1046   3        seton=0;
+C51 COMPILER V9.60.7.0   FARMING                                                           04/14/2023 23:48:30 PAGE 18  
+
+1047   3        } 
+1048   2      }
+1049   1      
+1050   1      if(!inc)
+1051   1      {
+1052   2        seton=0;
+1053   2        DELAY_ms(50);
+1054   2        if(lasssen)
+1055   2        {
+1056   3        seton=0;
+1057   3        lcdcmd(1);
+1058   3        lcddigt(1,1);
+1059   3        lcdprint("water sensor");
+1060   3        lcddigt(2,5);
+1061   3        lcdprint(" ON!");
+1062   3        EX1=1;
+1063   3        DELAY_ms(3000);
+1064   3        lasssen=!lasssen;
+1065   3        lcdcmd(1);
+1066   3        }
+1067   2        else
+1068   2        {
+1069   3        lcdcmd(1);
+1070   3        lcddigt(1,1);
+1071   3        lcdprint("water sensor");
+1072   3        lcddigt(2,5);
+1073   3        lcdprint("OFF !");
+1074   3        EX1=0;
+1075   3        DELAY_ms(3000);
+1076   3        lasssen=!lasssen;
+1077   3        lcdcmd(1);
+1078   3        seton=0;
+1079   3        } 
+1080   2      }
+1081   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   4083    ----
+   CONSTANT SIZE    =    287    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     65      41
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

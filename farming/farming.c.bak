@@ -1,0 +1,623 @@
+#include <reg52.H>
+#include <lcd.H>
+void sets();
+void timerINT();
+void delay50u();
+void dismode(unsigned char);
+void custmmodeedit(unsigned char w);
+void custmmodeset(unsigned char);
+void domode(unsigned char);
+void delay (unsigned int d );
+void servo(unsigned char);
+
+
+void mode0();
+void mode1();
+void mode2();
+
+void custmmode0();
+void custmmode1();
+void custmmode2();
+	
+
+unsigned char hole0modenum=1;
+unsigned char hole1modenum=1;
+unsigned char hole2modenum=1;
+
+unsigned char holep0=0;
+unsigned char holep1=0;
+unsigned char holep2=0;
+unsigned char place=0;
+
+unsigned char  us=0;
+
+unsigned int min=0;
+
+unsigned long millis=0;
+unsigned long fmints=0;
+unsigned long cmode0ft=0;
+
+
+unsigned long cmode0ont=0;
+unsigned long cmode1ont=0;
+unsigned long cmode2ont=0;
+
+unsigned long cmode0dt=0;
+unsigned long cmode1dt=0;
+unsigned long cmode2dt=0;
+
+
+unsigned long cmode0ontft=0;
+unsigned long cmode1ontft=0;
+unsigned long cmode2ontft=0;
+
+unsigned long cmode0dft=0;
+unsigned long cmode1dft=0;
+unsigned long cmode2dft=0;
+
+
+sbit RS = P1^0;                                                                   
+sbit EN = P1^1;
+sbit pump=P1^2;
+sbit motor=P1^3;
+
+
+sbit ok=P1^4;
+sbit inc=P1^5;
+sbit dec=P1^6;
+sbit edit=P1^7;
+
+
+
+
+/******************
+*******************
+*******************/
+
+void main()
+{
+timerINT();
+motor=0;	
+lcdint();	
+	lcddigt(1,3);
+	lcdprint("50013 TEAM ");
+	lcddigt(2,5);
+	lcdprint("present");
+	delay(5000);
+	lcdcmd(1);
+	
+while(1)
+{
+	sets();
+		
+//hole0	
+while(hole0modenum!=7)
+{
+	delay(500);
+	//make servo on hole0 dirc
+	place=holep0;
+	//do selected mode
+
+	domode(hole0modenum);
+
+	delay(500);
+}
+
+
+
+
+
+//hole1	
+while(hole1modenum!=7) 
+{
+	//make servo on hole0 dirc
+	
+	place=holep1;
+	
+	//do selected mode
+	domode(hole1modenum);
+
+}
+
+
+
+
+
+//hole2	
+while(hole2modenum!=7) 
+{
+	//make servo on hole2 dirc
+	place=holep2;
+
+	//do selected mode
+	domode(hole2modenum)	;
+
+}
+
+
+
+delay(500);
+
+}
+
+
+}
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+
+void sets()
+{
+	
+	
+/***hole0set****/
+
+lcdcmd(1);
+
+while(ok==1)
+{
+	
+	
+if(!inc)
+{
+hole0modenum++;
+lcdcmd(1);
+}
+if(!dec)
+{
+hole0modenum--;
+lcdcmd(1);
+}
+if(hole0modenum>7)
+hole0modenum=1;
+if(hole0modenum=0)
+hole0modenum=7;
+custmmodeedit(hole0modenum);
+
+lcddigt(1,0);
+lcdprint("HOLE 1 :"); 
+lcddigt(1,14);
+lcdvar(hole0modenum);
+lcddigt(2,4);
+dismode(hole0modenum);
+delay(750);
+
+}
+/***hole1set****/
+lcdcmd(1);
+while(ok)
+{
+if(!inc)
+{
+hole1modenum++; 
+}
+if(!dec)
+{
+hole1modenum--;
+}
+if(hole1modenum>7)
+hole1modenum=1;
+if(hole1modenum=0)
+hole1modenum=7;
+custmmodeedit(hole1modenum);
+
+lcddigt(1,0);
+lcdprint("HOLE 2 :"); 
+lcddigt(1,14);
+lcdvar(hole1modenum);
+lcddigt(2,4);
+dismode(hole1modenum);
+delay(750);
+}
+/***hole2set****/
+
+
+while(ok)
+{
+if(!inc)
+{
+hole2modenum++;
+}
+if(!dec)
+{
+hole2modenum--;
+}
+
+if(hole2modenum>7)
+	hole2modenum=1;
+if(hole2modenum=0)
+hole2modenum=7;
+custmmodeedit(hole2modenum);
+
+lcddigt(1,0);
+lcdprint("HOLE 3 :"); 
+lcddigt(1,14);
+lcdvar(hole2modenum);
+lcddigt(2,4);
+dismode(hole2modenum);
+delay(750);
+}
+}
+
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+
+
+void domode(unsigned char m)
+
+{
+		switch(m)
+	
+{
+	case 1 :
+	mode0();
+	break;
+	
+	case 2:
+	mode1();
+     	break;
+	
+	case 3 :
+	mode2();
+	break;
+	
+	case 4 :
+	custmmode0();
+	break;
+	
+	case 5 :
+	custmmode1();
+	break;
+	
+	case 6 :
+	custmmode2();
+	break;
+	
+}
+}
+
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+
+void custmmodeedit(unsigned char w)
+{
+	switch(w)
+		
+	{
+	
+	case 4 :
+	if(!edit)
+	{
+	custmmodeset(1);
+  }
+	break;
+	
+	case 5:
+		
+	if(!edit)
+	{
+	custmmodeset(2);
+	}	
+	break;
+	
+	case 6 :
+		
+	if(!edit)
+	{
+	custmmodeset(3);
+  }
+	break;
+	
+	}
+
+}
+
+
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+
+ void custmmodeset( unsigned char l )
+ {
+ 
+ switch(l)
+	
+{
+	
+	 case 1 :
+		
+	while(ok)
+{
+if(!inc)
+{
+cmode0ontft++;
+}
+if(!dec)
+{
+cmode0ontft--;
+}
+}
+
+delay(200);
+
+while(ok)
+{
+if(!inc)
+{
+cmode0dft++;
+}
+if(!dec)
+{
+cmode0dft--;
+}
+}
+delay(200);
+	
+	break;
+	
+	case 2:
+				
+	while(ok)
+{
+if(!inc)
+{
+cmode1ontft++;
+}
+if(!dec)
+{
+cmode1ontft--;
+}
+}
+
+delay(200);
+
+while(ok)
+{
+if(!inc)
+{
+cmode1dft++;
+}
+if(!dec)
+{
+cmode1dft--;
+}
+}
+delay(200);
+	
+	break;
+	
+
+	case 3 :
+		
+			
+	while(ok)
+{
+if(!inc)
+{
+cmode2ontft++;
+}
+if(!dec)
+{
+cmode2ontft--;
+}
+}
+
+delay(200);
+
+while(ok)
+{
+if(!inc)
+{
+cmode2dft++;
+}
+if(!dec)
+{
+cmode2dft--;
+}
+}
+delay(200);
+
+	break;
+ }
+}
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+
+void mode0()
+{
+}
+
+void mode1()
+{
+}
+      
+
+void mode2()
+{
+}
+
+void custmmode0()
+{
+	
+if(millis-cmode0dft>cmode0dt)
+	{
+	cmode0ontft=millis;
+	while(millis-cmode0ontft<cmode0ont)
+	{
+	servo(place);
+	pump=0;
+	}
+	cmode0dft=millis;
+	}
+	
+}
+
+void custmmode1()
+{
+
+	if(millis-cmode1dft>cmode1dt)
+	{
+	cmode1ontft=millis;
+	while(millis-cmode1ontft<cmode1ont)
+	{
+	servo(place);
+	pump=0;
+	}
+	cmode1dft=millis;
+	}
+}
+
+
+void custmmode2()
+{	
+if(millis-cmode2dft>cmode2dt)
+	{
+	cmode2ontft=millis;
+	while(millis-cmode2ontft<cmode2ont)
+	{
+	servo(place);
+	pump=0;
+	}
+	cmode2dft=millis;
+	}
+}
+
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+void dismode(unsigned char se)
+	
+{
+switch (se)
+	
+{
+	
+	case 1:
+    lcdprint("mint");
+	break;
+	
+
+	case 2:
+    lcdprint("potato");
+	break;
+
+	case 3:
+    lcdprint("banjo");
+	break;
+
+	case 4:
+    lcdprint("custum mode 1");
+	break;
+
+	case 5:
+    lcdprint("custum mode 2");
+	break;
+
+	case 6:
+    lcdprint("custum mode 3");
+	break;
+
+	case 7:
+    lcdprint("test&set");
+	break;
+
+	default:lcdprint("fuck");
+}
+
+}
+
+
+/*****************************************************
+*****************************************************
+*****************************************************/
+void servo( unsigned char ang)
+{
+	
+unsigned int Tics = 64735-(ang * 23);
+
+unsigned char LOWREG = Tics & 0x00FF ;
+unsigned char HREG = (Tics>>8) & 0x00FF ;
+unsigned long ftime=millis;
+	while (millis-ftime<100)
+	{
+unsigned long ftimme = millis;
+		TH1=HREG;
+		TL1=LOWREG;
+		TR1=1;
+    motor=1;
+	while (millis-ftimme<20)
+	{}
+	}
+
+}
+
+
+void timerINT()
+{
+TMOD=0x11;
+IE=0x8A;
+TH0 =0xF8;
+TL0=0x30;
+
+TR1=0;
+TR0=1;
+
+}
+
+
+
+/*void delay50u ( )
+{
+P3=0xFF;
+us=1;
+TR1=1;
+while(us)
+{
+P3=0x00;
+}
+P3=0xFF;
+}*/
+
+
+
+
+
+void delay ( unsigned int d )
+
+{
+	
+unsigned long  fimillis=millis;
+
+while((millis-fimillis)<d)
+{}
+	
+}
+
+
+void Timer (void)interrupt 1
+ 
+ { 
+	millis++;	
+	TR0=0;
+	TF0=0;
+	TH0 =0xF8;
+	TL0=0x30;
+	TR0=1;
+ }
+ 
+ void Timer1 (void) interrupt 3
+
+{
+	motor=0;
+	TR1=0;
+	TF1=0;
+}

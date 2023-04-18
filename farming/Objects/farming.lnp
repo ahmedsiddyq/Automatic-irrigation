@@ -1,0 +1,6 @@
+".\Objects\farming.obj",
+".\Objects\i2c.obj",
+".\Objects\eeprom.obj",
+".\Objects\delay.obj" 
+TO ".\Objects\farming" 
+PRINT(".\Listings\farming.m51") RAMSIZE(256) 

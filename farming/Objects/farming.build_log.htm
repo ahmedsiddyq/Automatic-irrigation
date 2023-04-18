@@ -1,0 +1,71 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: ahmed Microsoft, Microsoft, LIC=GM80W-QU4MD-M2CI9-H8FH8-95MI8-39TFM
+ 
+Tool Versions:
+Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.60.7.0
+Toolchain Path:  C:\Keil_v5\C51\BIN
+C Compiler:      C51.exe V9.60.7.0
+Assembler:       A51.exe V8.2.7.0
+Linker/Locator:  BL51.exe V6.22.4.0
+Library Manager: LIB51.exe V4.30.1.0
+Hex Converter:   OH51.exe V2.7.0.0
+CPU DLL:         S8051.DLL V3.125.1.0
+Dialog DLL:      DCYG.DLL V2.75.1.0 
+<h2>Project:</h2>
+D:\programing\uvison\farming\farming.uvproj
+Project File Date:  03/22/2023
+
+<h2>Output:</h2>
+Rebuild target 'Target 1'
+compiling farming.c...
+compiling i2c.c...
+compiling eeprom.c...
+compiling delay.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?LCD_SHIFT_RIGHT?FARMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?LCD_SHIFT_LEFT?FARMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?I2C_INIT?I2C
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_EEPROM_WRITESTRING?EEPROM
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_EEPROM_READSTRING?EEPROM
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCDDIGT?FARMING
+    CALLER1: ?PR?TIMER?FARMING
+    CALLER2: ?PR?SET?FARMING
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCDPRINT?FARMING
+    CALLER1: ?PR?TIMER?FARMING
+    CALLER2: ?PR?SET?FARMING
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCDDIGT?FARMING
+    CALLER1: ?PR?SET?FARMING
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCDPRINT?FARMING
+    CALLER1: ?PR?SET?FARMING
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_I2C_WRITE?I2C
+    CALLER1: ?PR?SET?FARMING
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_EESAVE?EEPROM
+    CALLER1: ?PR?SET?FARMING
+    CALLER2: ?C_C51STARTUP
+Program Size: data=117.0 xdata=0 code=5778
+creating hex file from ".\Objects\farming"...
+".\Objects\farming" - 0 Error(s), 11 Warning(s).
+Build Time Elapsed:  00:00:02
+</pre>
+</body>
+</html>
